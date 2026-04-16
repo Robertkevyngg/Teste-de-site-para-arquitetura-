@@ -38,7 +38,25 @@ Site institucional e portfólio para estúdio de arquitetura. Projeto estático 
 
 ## Como adicionar ou remover projetos e imagens
 
-Todo o conteúdo dinâmico fica em **`data/projects.json`**. Não é preciso mexer em HTML/CSS/JS para gerenciar o portfólio.
+Você tem **duas formas** de gerenciar o portfólio:
+
+### 🖥️ Opção 1 — Editor visual (recomendado)
+
+Acesse `/admin.html` no site (ex: `https://robertkevyngg.github.io/Teste-de-site-para-arquitetura-/admin.html`). Você verá um editor completo com formulários para:
+
+- Editar links do Instagram e WhatsApp
+- Adicionar, editar, reordenar e excluir projetos
+- Prévia ao vivo das imagens
+
+Fluxo:
+1. Edite no navegador (mudanças ficam salvas localmente no seu navegador)
+2. Clique em **"Baixar arquivo"** → o navegador salva `projects.json` nos Downloads
+3. Clique em **"Enviar ao GitHub"** → faça upload do arquivo baixado
+4. Em ~1 minuto o site atualiza sozinho
+
+### ✏️ Opção 2 — Edição manual do JSON
+
+Todo o conteúdo dinâmico fica em **`data/projects.json`**. Não é preciso mexer em HTML/CSS/JS.
 
 ### Adicionar um novo projeto
 

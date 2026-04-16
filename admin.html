@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Editor de Portfólio — Estúdio Arquitetura</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+<header class="admin-topbar">
+    <div class="admin-topbar__inner">
+        <div class="admin-topbar__brand">
+            <span class="logo__mark">A</span>
+            <div>
+                <strong>Editor de Portfólio</strong>
+                <small id="save-status">Carregando…</small>
+            </div>
+        </div>
+        <div class="admin-topbar__actions">
+            <a href="index.html" class="btn btn--ghost" target="_blank">Ver site</a>
+            <button id="download-btn" class="btn btn--primary" disabled>Baixar arquivo</button>
+        </div>
+    </div>
+</header>
+
+<main class="admin-main">
+
+    <section class="admin-card" id="step-guide">
+        <h2>Como usar este editor</h2>
+        <ol class="admin-steps">
+            <li>Edite os dados nos formulários abaixo — mudanças ficam guardadas no seu navegador automaticamente.</li>
+            <li>Quando terminar, clique em <strong>"Baixar arquivo"</strong> no topo. O navegador vai salvar um arquivo chamado <code>projects.json</code>.</li>
+            <li>Toque em <a id="github-upload-link" href="#" target="_blank" rel="noopener">Enviar ao GitHub</a> — selecione o arquivo baixado e confirme.</li>
+            <li>Em cerca de 1 minuto, o site fica atualizado automaticamente.</li>
+        </ol>
+    </section>
+
+    <section class="admin-card">
+        <h2>Redes Sociais</h2>
+        <p class="admin-muted">Estes links aparecem nos botões do hero, seção de contato e rodapé.</p>
+        <div class="form-grid">
+            <label class="field">
+                <span>Instagram (URL completa)</span>
+                <input type="url" id="social-instagram" placeholder="https://instagram.com/seuusuario">
+            </label>
+            <label class="field">
+                <span>WhatsApp (apenas números: código do país + DDD + número)</span>
+                <input type="text" id="social-whatsapp" placeholder="5511999999999" inputmode="numeric">
+                <small class="admin-muted">Ex: <code>5511987654321</code> (55 = Brasil, 11 = DDD, depois o número).</small>
+            </label>
+            <label class="field">
+                <span>Mensagem inicial do WhatsApp</span>
+                <textarea id="social-message" rows="2" placeholder="Olá! Gostaria de conversar sobre um projeto."></textarea>
+            </label>
+        </div>
+    </section>
+
+    <section class="admin-card">
+        <div class="admin-card__head">
+            <div>
+                <h2>Projetos <span class="admin-count" id="project-count">(0)</span></h2>
+                <p class="admin-muted">Arraste as fotos do Instagram para seu celular/computador, depois adicione aqui.</p>
+            </div>
+            <button id="add-project-btn" class="btn btn--primary">+ Novo projeto</button>
+        </div>
+
+        <div id="projects-list" class="admin-projects">
+            <!-- Projetos renderizados via JS -->
+        </div>
+
+        <div id="projects-empty" class="admin-empty" hidden>
+            Nenhum projeto ainda. Clique em <strong>"Novo projeto"</strong> para começar.
+        </div>
+    </section>
+
+    <section class="admin-card admin-card--danger">
+        <h2>Ações avançadas</h2>
+        <div class="admin-advanced">
+            <button id="reset-btn" class="btn btn--ghost">Descartar mudanças locais</button>
+            <label class="btn btn--ghost" style="cursor:pointer;">
+                <input type="file" id="import-file" accept="application/json" hidden>
+                Importar arquivo existente
+            </label>
+        </div>
+        <p class="admin-muted">
+            <strong>Descartar</strong>: volta ao conteúdo publicado atualmente (perde mudanças locais).<br>
+            <strong>Importar</strong>: carrega um <code>projects.json</code> salvo anteriormente.
+        </p>
+    </section>
+
+</main>
+
+<!-- Modal do projeto -->
+<div class="modal" id="project-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal__overlay" data-close></div>
+    <div class="modal__content">
+        <header class="modal__head">
+            <h3 id="modal-title">Editar projeto</h3>
+            <button class="modal__close" data-close aria-label="Fechar">&times;</button>
+        </header>
+        <form id="project-form" class="modal__body" novalidate>
+            <input type="hidden" id="field-index" value="">
+
+            <div class="form-grid">
+                <label class="field">
+                    <span>Título do projeto *</span>
+                    <input type="text" id="field-title" required placeholder="Ex: Residência Horizonte">
+                </label>
+
+                <label class="field">
+                    <span>Categoria *</span>
+                    <select id="field-category" required>
+                        <option value="residencial">Residencial</option>
+                        <option value="comercial">Comercial</option>
+                        <option value="interiores">Interiores</option>
+                    </select>
+                </label>
+
+                <label class="field">
+                    <span>Localização</span>
+                    <input type="text" id="field-location" placeholder="Ex: Florianópolis, SC">
+                </label>
+
+                <label class="field">
+                    <span>Ano</span>
+                    <input type="number" id="field-year" placeholder="2025" min="1900" max="2100">
+                </label>
+
+                <label class="field field--full">
+                    <span>Descrição curta</span>
+                    <textarea id="field-description" rows="2" placeholder="Uma frase sobre o projeto."></textarea>
+                </label>
+
+                <label class="field field--full">
+                    <span>Imagem de capa (URL ou caminho) *</span>
+                    <input type="text" id="field-cover" required placeholder="assets/images/projects/minha-foto.jpg">
+                    <small class="admin-muted">Pode ser um link (https://...) ou um caminho de arquivo que você já subiu no GitHub.</small>
+                </label>
+
+                <div class="field field--full">
+                    <span>Galeria de fotos (uma por linha)</span>
+                    <textarea id="field-gallery" rows="5" placeholder="assets/images/projects/foto-1.jpg
+assets/images/projects/foto-2.jpg
+https://exemplo.com/foto-3.jpg"></textarea>
+                    <small class="admin-muted">Se deixar em branco, a capa será usada como única imagem.</small>
+                </div>
+
+                <div class="field field--full">
+                    <span>Prévia da capa</span>
+                    <div class="preview" id="cover-preview">Adicione uma URL acima para ver a prévia</div>
+                </div>
+            </div>
+
+            <footer class="modal__foot">
+                <button type="button" class="btn btn--ghost" data-close>Cancelar</button>
+                <button type="submit" class="btn btn--primary">Salvar projeto</button>
+            </footer>
+        </form>
+    </div>
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>
